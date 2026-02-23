@@ -7,13 +7,13 @@ A desktop application built with Python and CustomTkinter that helps guitarists 
 ## 🌟 Key Features
 
 - **Dynamic Scale Generation:** Supports both Major and Minor scales in every key (including sharps and flats).
-- **Correct Enharmonic Spelling:** Uses a custom algorithm to ensure notes are spelled correctly according to music theory (e.g., E# instead of F in C# Major).
+- **Correct Enharmonic Spelling:** Uses a custom algorithm to ensure notes are spelled correctly according to music theory.
 - **Visual Chord Diagrams:** Automatically displays guitar chord shapes for every degree of the chosen scale.
 - **Modern UI:** Built with a responsive, dark-mode interface using `CustomTkinter`.
 
 ## 🛠️ Technical Highlights
 
-As a developer, I focused on several "clean code" principles during this project:
+This being my first public project I tried to focuse on "clean code" principles during this project:
 
 *   **DRY (Don't Repeat Yourself):** Refactored the scale generation logic into a single, dynamic function that handles multiple modes.
 *   **Separation of Concerns:** Split the project into `main.py` (UI/UX) and `music_logic.py` (Music Theory Math) to keep the codebase maintainable.
@@ -22,11 +22,8 @@ As a developer, I focused on several "clean code" principles during this project
 
 ## 🚀 How to Run
 
-### Prerequisites
-- Python 3.8 or higher
-- `pip install customtkinter pillow`
+Download the latest release from GitHub and run the .exe file.
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com
+[![Download Windows App](https://img.shields.io)](https://github.com/OllinAllin/guitar-chord-app-python/releases/latest)
+
+
