@@ -2,6 +2,7 @@
 
 import customtkinter as ctk
 import os
+import sys
 from PIL import Image
 from music_logic import get_scale, MAJOR_DEGREES, MAJOR_QUALITIES, MINOR_DEGREES, MINOR_QUALITIES
 
@@ -10,8 +11,11 @@ class GuitarChordApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.assets_path = os.path.join(base_dir, "assets", "chords")
+        if hasattr(sys, '_MEIPASS'):
+            self.base_dir = sys._MEIPASS
+        else:
+            self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.assets_path = os.path.join(self.base_dir, "assets", "chords")
         fallback_path = os.path.join(self.assets_path, "image_coming_soon.png")
         fallback_data = Image.open(fallback_path)
         self.fallback_image = ctk.CTkImage(light_image=fallback_data, dark_image=fallback_data, size=(160, 200))

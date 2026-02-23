@@ -1,8 +1,8 @@
-# 🎸 Guitar Chords & Scales  App
+# 🎸 Guitar Chords & Scales App
 
 A desktop application built with Python and CustomTkinter that helps guitarists visualize musical scales and their corresponding chord shapes across any key.
 
-![App Screenshot](https://via.placeholder.com)
+![App Screenshot](screenshots/app_preview.png)
 
 ## 🌟 Key Features
 
