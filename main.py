@@ -4,7 +4,7 @@ import customtkinter as ctk
 import os
 import sys
 from PIL import Image
-from music_logic import get_scale, MAJOR_DEGREES, MAJOR_QUALITIES, MINOR_DEGREES, MINOR_QUALITIES
+from music_logic import get_scale, MAJOR_DEGREES, MAJOR_QUALITIES, MINOR_DEGREES, MINOR_QUALITIES, LETTERS
 
 
 class GuitarChordApp(ctk.CTk):
@@ -15,13 +15,17 @@ class GuitarChordApp(ctk.CTk):
             self.base_dir = sys._MEIPASS
         else:
             self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        
         self.assets_path = os.path.join(self.base_dir, "assets", "chords")
         fallback_path = os.path.join(self.assets_path, "image_coming_soon.png")
         fallback_data = Image.open(fallback_path)
         self.fallback_image = ctk.CTkImage(light_image=fallback_data, dark_image=fallback_data, size=(160, 200))
 
+        self.symbol_font = ("Segoe UI Symbol", 20, "bold", "italic")
+        self.standard_font = ("Archivo Black", 20, "italic")
+
         self.title("Chords in Any Key")
-        self.geometry("1500x500")
+        self.geometry("1500x600")
 
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -30,16 +34,16 @@ class GuitarChordApp(ctk.CTk):
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         
         self.sidebar.grid_columnconfigure(0, weight=1)
-
         self.sidebar.grid_rowconfigure(5, weight=1)
         
-        self.title_label = ctk.CTkLabel(self.sidebar, text="Choose a Scale", font=("Helvetica", 20, "bold"))
+        
+        self.title_label = ctk.CTkLabel(self.sidebar, text="Quality", font=self.standard_font)
         self.title_label.grid(row=0, column=0, padx=20, pady=20)
 
-        self.major_btn = ctk.CTkButton(self.sidebar, text="Major Scale", command=lambda:self.run_logic("major"))
+        self.major_btn = ctk.CTkButton(self.sidebar, text="Major Scale", font=self.standard_font, height=50, command=lambda:self.run_logic("major"))
         self.major_btn.grid(row=1, column=0, padx=20, pady=20)
 
-        self.minor_btn = ctk.CTkButton(self.sidebar, text="Minor Scale", command=lambda:self.run_logic("minor"))
+        self.minor_btn = ctk.CTkButton(self.sidebar, text="Minor Scale", font=self.standard_font, height = 50, command=lambda:self.run_logic("minor"))
         self.minor_btn.grid(row=2, column=0, padx=20, pady=20)
 
         self.clear_btn = ctk.CTkButton(self.sidebar, text="Clear", command=self.clear_all, fg_color="#CC3333", hover_color="#990000")
@@ -48,35 +52,53 @@ class GuitarChordApp(ctk.CTk):
         self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
-        self.entry = ctk.CTkEntry(self.main_frame, placeholder_text="Enter Key (e.g. C#)", placeholder_text_color="gray", width=200)
-        self.entry.pack(pady=10)
+        self.entry = ctk.CTkEntry(self.main_frame, placeholder_text="Enter Key (e.g. C#)", placeholder_text_color="gray", font=self.standard_font, width=300, height=60)
+        self.entry.grid(row=1,column=0, padx=20, pady=20, sticky="w")
+
+        self.btn_container = ctk.CTkFrame(self.main_frame, fg_color="transparent", width=200, height=60)
+        self.btn_container.grid(row=1, column=2, sticky="w")
+        self.note_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=LETTERS, font=self.standard_font, selected_hover_color="#FFCC00")
+        self.note_seg.grid(row=0, column=0, padx=20, pady=10, sticky="w")
+        self.note_seg.set("C") 
+        
+        self.acc_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=["#", "♮", "b"], font=self.symbol_font, selected_hover_color="#FFCC00")
+        self.acc_seg.grid(row=0, column=1, padx=20, pady=10, sticky="w")
+        self.acc_seg.set("♮")
 
         self.title_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.title_container.pack(pady=10)
+        self.title_container.grid(column=2,pady=10)
 
         self.note_label = ctk.CTkLabel(self.title_container, text="--", font=("Archivo Black", 50, "bold", "italic"), text_color="#FFCC00")
-        self.note_label.grid(row=0, column=0, padx=5)
+        self.note_label.grid(row=0, column=0, padx=10, sticky="w")
 
         self.type_label = ctk.CTkLabel(self.title_container, text="", font=("Archivo Black", 35, "italic"), text_color="gray")
-        self.type_label.grid(row=0, column=1, padx=5, sticky="s")
+        self.type_label.grid(row=0, column=1, padx=5, sticky="w")
 
-        self.scale_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        self.scale_container.pack(pady=20, fill="x")
+        self.scale_container = ctk.CTkFrame(self.main_frame, fg_color="transparent", width=1265)
+        self.scale_container.grid(row=5, column=0, columnspan=20, padx=10, pady=20, sticky="w")
 
         self.degree_labels = [] 
         self.note_labels = []
 
         self.after(100, lambda: self.focus_set()) 
 
+
     def run_logic(self, mode):
         user_input = self.entry.get().strip()
-       
+
         if user_input:
             scale_list = get_scale(user_input, mode)
-            if scale_list:
-                self.display_scale(scale_list, mode)
-                self.note_label.configure(text=user_input.title())
-                self.type_label.configure(text=f"{mode.title()} scale")
+        else:
+            note = self.note_seg.get()
+            acc = self.acc_seg.get() if self.acc_seg.get() != "♮" else ""
+            user_input = f"{note}{acc}".strip()
+            scale_list = get_scale(user_input, mode)
+
+        if scale_list:
+            self.display_scale(scale_list, mode)
+            self.note_label.configure(text=user_input.title())
+            self.type_label.configure(text=f"{mode.title()} scale")
+            self.clear_entry()
 
     def display_scale(self, scale_notes, mode):
         for widget in self.scale_container.winfo_children():
@@ -106,16 +128,20 @@ class GuitarChordApp(ctk.CTk):
             return self.fallback_image
             
     def clear_all(self):
+        self.clear_entry()
+        self.note_label.configure(text="--")
+        self.type_label.configure(text="")
+        self.clear_scale_display()
+
+    def clear_scale_display(self):
+        for widget in self.scale_container.winfo_children():
+            widget.destroy() 
+
+    def clear_entry(self):
         self.entry.delete(0, "end")
         current_placeholder = self.entry.cget("placeholder_text")
         self.entry.configure(placeholder_text=current_placeholder)
         self.focus()
-        self.note_label.configure(text="--")
-        self.type_label.configure(text="")
-
-    def clear_scale_display(self):
-        for widget in self.scale_container.winfo_children():
-            widget.destroy()     
 
 if __name__ == "__main__":
     app = GuitarChordApp()
