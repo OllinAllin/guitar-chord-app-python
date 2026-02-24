@@ -27,3 +27,25 @@ Download the latest release from GitHub and run the .exe file.
 [![Download Windows App](https://img.shields.io)](https://github.com/OllinAllin/guitar-chord-app-python/releases/latest)
 
 
+## Changelog
+
+### - 2026-02-24
+**Added**
+- New interactive buttons for musical Keys (A-G).
+- Buttons for Sharps (#) and Flats (b) to simplify input.
+- Clear text input after loading the notes to not mess with the new button inputs
+- Update screenshot of the new version
+
+
+**Fixed**
+- Minor UI alignment issues on the chord display screen.
+- Few chord pictures updated.
+- clear button not clearing the screen
+- Bigger fonts, bigger user input box and bigger buttons
+---
+
+### - 2026-02-23
+**Added**
+- Initial release of the Guitar Chords and Scales app.
+- Support for manual text input of chord names.
+- Display of corresponding scales and finger position images.
