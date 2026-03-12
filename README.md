@@ -29,6 +29,12 @@ Download the latest release from GitHub and run the .exe file.
 
 ## Changelog
 
+### - 2026-03-12
+**Added**
+-Option to choose Light, Dark or system theme color
+-Button for the theme
+-function to change fingerings to black color in light theme
+
 ### - 2026-02-24
 **Added**
 - New interactive buttons for musical Keys (A-G).

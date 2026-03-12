@@ -11,6 +11,11 @@ class GuitarChordApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
+        ctk.set_appearance_mode("dark")
+        self.title("Chords in Any Key")
+        self.geometry("1500x600")
+        self.configure(fg_color=("#EBEBEB", "#1A1A1A")) # Main Background
+
         if hasattr(sys, '_MEIPASS'):
             self.base_dir = sys._MEIPASS
         else:
@@ -24,63 +29,76 @@ class GuitarChordApp(ctk.CTk):
         self.symbol_font = ("Segoe UI Symbol", 20, "bold", "italic")
         self.standard_font = ("Archivo Black", 20, "italic")
 
-        self.title("Chords in Any Key")
-        self.geometry("1500x600")
-
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.sidebar = ctk.CTkFrame(self, width=160, corner_radius=0)
+        self.sidebar = ctk.CTkFrame(self, width=160, corner_radius=0, fg_color=("#DBDBDB", "#242424"))
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        
         self.sidebar.grid_columnconfigure(0, weight=1)
         self.sidebar.grid_rowconfigure(5, weight=1)
-        
         
         self.title_label = ctk.CTkLabel(self.sidebar, text="Quality", font=self.standard_font)
         self.title_label.grid(row=0, column=0, padx=20, pady=20)
 
-        self.major_btn = ctk.CTkButton(self.sidebar, text="Major Scale", font=self.standard_font, height=50, command=lambda:self.run_logic("major"))
+        self.major_btn = ctk.CTkButton(self.sidebar, text="Major Scale", font=self.standard_font, 
+                                       height=50, fg_color="#333333", hover_color="#FFCC00",
+                                       command=lambda:self.run_logic("major"))
         self.major_btn.grid(row=1, column=0, padx=20, pady=20)
 
-        self.minor_btn = ctk.CTkButton(self.sidebar, text="Minor Scale", font=self.standard_font, height = 50, command=lambda:self.run_logic("minor"))
+        self.minor_btn = ctk.CTkButton(self.sidebar, text="Minor Scale", font=self.standard_font, 
+                                       height=50, fg_color="#333333", hover_color="#FFCC00",
+                                       command=lambda:self.run_logic("minor"))
         self.minor_btn.grid(row=2, column=0, padx=20, pady=20)
 
-        self.clear_btn = ctk.CTkButton(self.sidebar, text="Clear", command=self.clear_all, fg_color="#CC3333", hover_color="#990000")
+        self.appearance_menu = ctk.CTkOptionMenu(self.sidebar, values=["Dark", "Light", "System"],
+                                                 command=self.change_appearance_mode)
+        self.appearance_menu.grid(row=4, column=0, padx=20, pady=10, sticky="s")
+        self.appearance_menu.set("Dark")
+
+        self.clear_btn = ctk.CTkButton(self.sidebar, text="Clear", command=self.clear_all, 
+                                       fg_color="#CC3333", hover_color="#990000")
         self.clear_btn.grid(row=5, column=0, padx=20, pady=20, sticky="s")
 
         self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
-        self.entry = ctk.CTkEntry(self.main_frame, placeholder_text="Enter Key (e.g. C#)", placeholder_text_color="gray", font=self.standard_font, width=300, height=60)
+        self.entry = ctk.CTkEntry(self.main_frame, placeholder_text="Enter Key (e.g. C#)", 
+                                  font=self.standard_font, width=300, height=60)
         self.entry.grid(row=1,column=0, padx=20, pady=20, sticky="w")
 
-        self.btn_container = ctk.CTkFrame(self.main_frame, fg_color="transparent", width=200, height=60)
+        self.btn_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.btn_container.grid(row=1, column=2, sticky="w")
-        self.note_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=LETTERS, font=self.standard_font, selected_hover_color="#FFCC00")
+        
+        self.note_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=LETTERS, 
+                                               font=self.standard_font, selected_color="#FFCC00", 
+                                               selected_hover_color="#E6B800")
         self.note_seg.grid(row=0, column=0, padx=20, pady=10, sticky="w")
         self.note_seg.set("C") 
         
-        self.acc_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=["#", "♮", "b"], font=self.symbol_font, selected_hover_color="#FFCC00")
+        self.acc_seg = ctk.CTkSegmentedButton(self.btn_container, height=60, values=["#", "♮", "b"], 
+                                              font=self.symbol_font, selected_color="#FFCC00", 
+                                              selected_hover_color="#E6B800")
         self.acc_seg.grid(row=0, column=1, padx=20, pady=10, sticky="w")
         self.acc_seg.set("♮")
 
         self.title_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.title_container.grid(column=2,pady=10)
 
-        self.note_label = ctk.CTkLabel(self.title_container, text="--", font=("Archivo Black", 50, "bold", "italic"), text_color="#FFCC00")
+        self.note_label = ctk.CTkLabel(self.title_container, text="--", 
+                                       font=("Archivo Black", 50, "bold", "italic"), text_color="#FFCC00")
         self.note_label.grid(row=0, column=0, padx=10, sticky="w")
 
-        self.type_label = ctk.CTkLabel(self.title_container, text="", font=("Archivo Black", 35, "italic"), text_color="gray")
+        self.type_label = ctk.CTkLabel(self.title_container, text="", 
+                                       font=("Archivo Black", 35, "italic"), text_color="gray")
         self.type_label.grid(row=0, column=1, padx=5, sticky="w")
 
-        self.scale_container = ctk.CTkFrame(self.main_frame, fg_color="transparent", width=1265)
+        self.scale_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
         self.scale_container.grid(row=5, column=0, columnspan=20, padx=10, pady=20, sticky="w")
 
-        self.degree_labels = [] 
-        self.note_labels = []
+        self.after(100, lambda: self.focus_set())
 
-        self.after(100, lambda: self.focus_set()) 
+    def change_appearance_mode(self, new_mode):
+        ctk.set_appearance_mode(new_mode)
 
 
     def run_logic(self, mode):
@@ -108,10 +126,10 @@ class GuitarChordApp(ctk.CTk):
         degrees = MAJOR_DEGREES if mode == "major" else MINOR_DEGREES
 
         for i, note in enumerate(scale_notes):
-            cell = ctk.CTkFrame(self.scale_container, fg_color="transparent")
+            cell = ctk.CTkFrame(self.scale_container)
             cell.grid(row=0, column=i, padx=10)
-            ctk.CTkLabel(cell, text=degrees[i], font=("Helvetica", 40), text_color="gray").pack()
-            ctk.CTkLabel(cell, text=note, font=("Helvetica", 36, "bold"), text_color="#FFCC00").pack()
+            ctk.CTkLabel(cell, text=degrees[i], font=("Helvetica", 40)).pack()
+            ctk.CTkLabel(cell, text=note, font=("Helvetica", 36, "bold")).pack()
             chord_img = self.get_chord_image(note, qualities[i])
             img_label = ctk.CTkLabel(cell, text="", image=chord_img)
             img_label.image = chord_img 
@@ -121,9 +139,17 @@ class GuitarChordApp(ctk.CTk):
         clean_note = note_name.replace("#", "_sharp").replace("b", "_flat")
         filename = f"{clean_note}_{quality}.png"
         image_path = os.path.join(self.assets_path, filename)
+
         if os.path.exists(image_path):
-            img_data = Image.open(image_path)
-            return ctk.CTkImage(light_image=img_data, dark_image=img_data, size=(160, 200))
+            dark_img_data = Image.open(image_path) # Keep original yellow
+            
+            light_img_data = self.recolor_image(dark_img_data, target_color="#1A1A1A")
+            
+            return ctk.CTkImage(
+                light_image=light_img_data, 
+                dark_image=dark_img_data, 
+                size=(160, 200)
+            )
         else:
             return self.fallback_image
             
@@ -142,6 +168,19 @@ class GuitarChordApp(ctk.CTk):
         current_placeholder = self.entry.cget("placeholder_text")
         self.entry.configure(placeholder_text=current_placeholder)
         self.focus()
+
+    def change_appearance_mode(self, new_appearance_mode: str):
+        ctk.set_appearance_mode(new_appearance_mode)
+
+    def recolor_image(self, image, target_color="#1A1A1A"):
+        image = image.convert("RGBA")
+        
+        r, g, b, a = image.split()
+        
+        color_img = Image.new("RGB", image.size, target_color)
+        cr, cg, cb = color_img.split()
+        
+        return Image.merge("RGBA", (cr, cg, cb, a))
 
 if __name__ == "__main__":
     app = GuitarChordApp()
